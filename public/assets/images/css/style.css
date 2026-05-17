@@ -1,0 +1,194 @@
+body{
+    background:#f4f7f6;
+    font-family:'Segoe UI', sans-serif;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.card-custom{
+    background:white;
+    border-radius:25px;
+    padding:30px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom:30px;
+}
+
+/* =========================
+   PAGE TITLE
+========================= */
+
+.page-title{
+    font-size:36px;
+    font-weight:bold;
+    margin-bottom:30px;
+    color:#222;
+}
+
+/* =========================
+   SECTION TITLE
+========================= */
+
+.section-title{
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:20px;
+    color:#146c43;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-modern{
+    border-collapse:separate;
+    border-spacing:0 10px;
+}
+
+.table-modern thead tr{
+    background:#146c43;
+    color:white;
+}
+
+.table-modern thead th{
+    border:none;
+    padding:15px;
+}
+
+.table-modern tbody tr{
+    background:white;
+    box-shadow:0 2px 8px rgba(0,0,0,0.03);
+}
+
+.table-modern tbody td{
+    padding:15px;
+    vertical-align:middle;
+    border-top:none;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.btn-custom{
+    background:#146c43;
+    color:white;
+    border:none;
+    padding:10px 22px;
+    border-radius:12px;
+    transition:0.3s;
+    font-weight:600;
+}
+
+.btn-custom:hover{
+    background:#0f5132;
+    color:white;
+}
+
+.btn-edit{
+    background:#ffc107;
+    color:black;
+    border:none;
+    padding:8px 14px;
+    border-radius:10px;
+    font-size:14px;
+}
+
+.btn-delete{
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:10px;
+    font-size:14px;
+}
+
+.btn-detail{
+    background:#0d6efd;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:10px;
+    font-size:14px;
+}
+
+/* =========================
+   BADGE STATUS
+========================= */
+
+.badge-menunggu{
+    background:#ffc107;
+    color:black;
+    padding:8px 14px;
+    border-radius:10px;
+    font-size:13px;
+}
+
+.badge-proses{
+    background:#0d6efd;
+    color:white;
+    padding:8px 14px;
+    border-radius:10px;
+    font-size:13px;
+}
+
+.badge-selesai{
+    background:#198754;
+    color:white;
+    padding:8px 14px;
+    border-radius:10px;
+    font-size:13px;
+}
+
+.badge-batal{
+    background:#dc3545;
+    color:white;
+    padding:8px 14px;
+    border-radius:10px;
+    font-size:13px;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.form-control{
+    border-radius:12px;
+    padding:12px;
+}
+
+.form-select{
+    border-radius:12px;
+    padding:12px;
+}
+
+/* =========================
+   EMPTY TABLE
+========================= */
+
+.empty-data{
+    text-align:center;
+    padding:40px;
+    color:#888;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+
+    .page-title{
+        font-size:28px;
+    }
+
+    .section-title{
+        font-size:22px;
+    }
+
+    .table{
+        font-size:14px;
+    }
+
+}

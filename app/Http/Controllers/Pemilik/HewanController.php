@@ -30,33 +30,61 @@ class HewanController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_hewan' => 'required',
-            'jenis_hewan' => 'required',
-            'jenis_kelamin' => 'required',
-            'ras' => 'required',
-            'umur' => 'required|integer',
-            'satuan_umur' => 'required',
-            'berat' => 'required|numeric',
-            'warna' => 'required',
-            
-         
-        ]);
+                    $request->validate([
 
-        Hewan::create([
-            'user_id' => auth()->id(),
-            'nama_hewan' => $request->nama_hewan,
-            'jenis_hewan' => $request->jenis_hewan,
-            'ras' => $request->ras,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'umur' => $request->umur,
-            'berat' => $request->berat,
-            'warna' => $request->warna,
-            'keluhan' => $request->keluhan,
-        ]);
+                    'nama_hewan' => 'required',
+                    'jenis_hewan' => 'required',
+                    'jenis_kelamin' => 'required',
+                    'ras' => 'required',
+                    'umur' => 'required|integer',
+                    'satuan_umur' => 'required',
+                    'berat' => 'required|numeric',
+                    'warna' => 'required',
 
-        return redirect()->route('hewan.index')->with('success', 'Hewan berhasil ditambahkan');
-    }
+                ]);
+
+                Hewan::create([
+
+                    'user_id' => auth()->id(),
+
+                    'nama_hewan' =>
+                        $request->nama_hewan,
+
+                    'jenis_hewan' =>
+                        $request->jenis_hewan,
+
+                    'ras' =>
+                        $request->ras,
+
+                    'jenis_kelamin' =>
+                        $request->jenis_kelamin,
+
+                    'umur' =>
+                        $request->umur,
+
+                    /**
+                     * FIX UTAMA
+                     */
+                    'satuan_umur' =>
+                        $request->satuan_umur,
+
+                    'berat' =>
+                        $request->berat,
+
+                    'warna' =>
+                        $request->warna,
+
+                    'keluhan' =>
+                        $request->keluhan,
+
+                ]);
+
+                return redirect('/pemilik/hewan')
+                        ->with(
+                            'success',
+                            'Hewan berhasil ditambahkan'
+                        );
+            }
 
     /**
      * Display the specified resource.

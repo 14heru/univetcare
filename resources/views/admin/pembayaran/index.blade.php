@@ -6,68 +6,144 @@
 
     <div class="card-body">
 
-        <h3>Verifikasi Pembayaran</h3>
+        <div class="d-flex justify-content-between mb-3">
+
+            <h3>Verifikasi Pembayaran</h3>
+
+        </div>
 
         <table class="table table-bordered">
 
-            <tr>
+            <thead>
 
-                <th>No</th>
-                <th>Kode Pembayaran</th>
-                <th>Metode</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Bukti</th>
-                <th>Aksi</th>
+                <tr>
 
-            </tr>
+                    <th>Kode</th>
 
-            @foreach($pembayaran as $item)
+                    <th>Jenis</th>
 
-            <tr>
+                    <th>Total</th>
 
-                <td>{{ $loop->iteration }}</td>
+                    <th>Metode</th>
 
-                <td>{{ $item->kode_pembayaran }}</td>
+                    <th>Status</th>
 
-                <td>{{ $item->metode_pembayaran }}</td>
+                    <th>Bukti</th>
 
-                <td>Rp {{ number_format($item->jumlah_bayar) }}</td>
+                    <th>Aksi</th>
 
-                <td>{{ $item->status }}</td>
+                </tr>
 
-                <td>
+            </thead>
 
-                    <img src="{{ asset('bukti_pembayaran/'.$item->bukti_pembayaran) }}"
-                         width="100">
+            <tbody>
 
-                </td>
+                @forelse($pembayaran as $item)
 
-                <td>
+                <tr>
 
-                    @if($item->status == 'Menunggu Verifikasi')
+                    <td>
 
-                    <a href="{{ url('/admin/pembayaran/'.$item->id.'/verifikasi') }}"
-                       class="btn btn-success btn-sm">
+                        {{ $item->kode_pembayaran }}
 
-                        Verifikasi
+                    </td>
 
-                    </a>
+                    <td>
 
-                    <a href="{{ url('/admin/pembayaran/'.$item->id.'/gagal') }}"
-                       class="btn btn-danger btn-sm">
+                        {{ $item->jenis_pembayaran }}
 
-                        Tolak
+                    </td>
 
-                    </a>
+                    <td>
 
-                    @endif
+                        Rp {{ number_format($item->jumlah_bayar) }}
 
-                </td>
+                    </td>
 
-            </tr>
+                    <td>
 
-            @endforeach
+                        {{ $item->metode_pembayaran }}
+
+                    </td>
+
+                    <td>
+
+                        {{ $item->status }}
+
+                    </td>
+
+                    <td>
+
+                        @if($item->bukti_pembayaran)
+
+                        <a href="{{ asset('bukti_pembayaran/'.$item->bukti_pembayaran) }}"
+                           target="_blank"
+                           class="btn btn-sm btn-primary">
+
+                            Lihat
+
+                        </a>
+
+                        @else
+
+                        -
+
+                        @endif
+
+                    </td>
+
+                    <td>
+
+                        @if(
+
+                            $item->status == 'Menunggu Konfirmasi Admin'
+
+                            ||
+
+                            $item->status == 'Menunggu Pembayaran'
+                            )
+
+                            <a href="{{ url('/admin/pembayaran/'.$item->id.'/verifikasi') }}"
+                            class="btn btn-success btn-sm">
+
+                                Verifikasi
+
+                            </a>
+
+                            <a href="{{ url('/admin/pembayaran/'.$item->id.'/gagal') }}"
+                            class="btn btn-danger btn-sm">
+
+                                Tolak
+
+                            </a>
+
+                        @else
+
+                            -
+
+                        @endif
+
+
+                    </td>
+
+                </tr>
+
+                @empty
+
+                <tr>
+
+                    <td colspan="7"
+                        class="text-center">
+
+                        Tidak ada pembayaran
+
+                    </td>
+
+                </tr>
+
+                @endforelse
+
+            </tbody>
 
         </table>
 

@@ -16,6 +16,26 @@
 
     </h3>
 
+    @if($jadwal->count() == 0)
+
+        <div class="alert alert-warning">
+
+            Belum ada jadwal pemeriksaan tersedia.
+
+        </div>
+
+    @endif
+
+    @if($jadwal->count() > 0 && $jadwal->where('kuota', '>', 0)->count() == 0)
+
+        <div class="alert alert-warning">
+
+            Semua kuota pemeriksaan sudah penuh. Silakan pilih jadwal lain jika tersedia.
+
+        </div>
+
+    @endif
+
     <form method="POST"
           action="{{ url('/pemilik/pemesanan') }}">
 
@@ -41,11 +61,11 @@
 
                 @foreach($hewan as $item)
 
-                <option value="{{ $item->id }}">
+                    <option value="{{ $item->id }}">
 
-                    {{ $item->nama_hewan }}
+                        {{ $item->nama_hewan }}
 
-                </option>
+                    </option>
 
                 @endforeach
 
@@ -73,16 +93,20 @@
 
                 @foreach($jadwal as $item)
 
-                <option value="{{ $item->id }}">
+                    <option value="{{ $item->id }}"
+                            @if($item->kuota <= 0 || $item->status == 'Penuh') disabled @endif>
 
-                                {{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}
-    |
-    {{ \Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }}
-    -
-    {{ \Carbon\Carbon::parse($item->jam_selesai)->format('H:i') }}
-                </option>
+                        {{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}
+                        |
+                        {{ \Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }}
+                        -
+                        {{ \Carbon\Carbon::parse($item->jam_selesai)->format('H:i') }}
+                        |
+                        Kuota: {{ $item->kuota }}
+                        |
+                        {{ $item->kuota <= 0 || $item->status == 'Penuh' ? 'Penuh' : 'Tersedia' }}
 
-
+                    </option>
 
                 @endforeach
 
@@ -109,33 +133,25 @@
         <div class="d-flex gap-3">
 
             <button type="submit"
-            class="btn-custom">
+                    class="btn-custom"
+                    @if($jadwal->where('kuota', '>', 0)->count() == 0) disabled @endif>
 
                 <i class="bi bi-check-circle"></i>
 
-                        Simpan Booking
+                Simpan Booking
 
             </button>
 
             <button type="reset"
-                class="btn btn-secondary rounded-pill px-4">
+                    class="btn btn-secondary rounded-pill px-4">
 
                 <i class="bi bi-arrow-counterclockwise"></i>
 
-                        Reset
+                Reset
 
             </button>
 
         </div>
-
-        {{-- <button type="submit"
-                class="btn-custom">
-
-            <i class="bi bi-check-circle"></i>
-
-            Simpan Booking
-
-        </button> --}}
 
     </form>
 

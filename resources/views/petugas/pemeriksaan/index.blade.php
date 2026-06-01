@@ -6,63 +6,99 @@
 
     <div class="card-body">
 
-        <h3>Antrian Pemeriksaan</h3>
+        <h3 class="mb-4">
+
+            Antrian Pemeriksaan
+
+        </h3>
 
         <table class="table table-bordered">
 
-            <tr>
+            <thead>
 
-                <th>No</th>
-                <th>Kode Booking</th>
-                <th>Pemilik</th>
-                <th>Hewan</th>
-                <th>Status</th>
-                <th>Aksi</th>
+                <tr>
 
-            </tr>
+                    <th>No</th>
 
-            @foreach($pemesanan as $item)
+                    <th>Kode Booking</th>
 
-            <tr>
+                    <th>Pemilik</th>
 
-                <td>{{ $loop->iteration }}</td>
+                    <th>Hewan</th>
 
-                <td>{{ $item->kode_booking }}</td>
+                    <th>Status</th>
 
-                <td>{{ $item->user->name }}</td>
+                    <th>Aksi</th>
 
-                <td>{{ $item->hewan->nama_hewan }}</td>
+                </tr>
 
-                <td>{{ $item->status }}</td>
+            </thead>
 
-                <td>
+            <tbody>
 
-                    @if($item->status == 'Dikonfirmasi')
+                @forelse($pemesanan as $item)
 
-                    <a href="{{ url('/petugas/pemeriksaan/'.$item->id.'/create') }}"
-                        class="btn btn-primary btn-sm">
+                <tr>
 
-                        Input Pemeriksaan
+                    <td>
 
-        </a>
+                        {{ $loop->iteration }}
 
-            @elseif($item->status == 'Diproses')
+                    </td>
 
-            <a href="{{ url('/petugas/pemeriksaan/'.$item->pemeriksaan->id.'/selesai') }}"
-                class="btn btn-success btn-sm">
+                    <td>
 
-                Selesaikan
+                        {{ $item->kode_booking }}
 
-        </a>
+                    </td>
 
-    @endif
+                    <td>
 
+                        {{ $item->user->name }}
 
-                </td>
+                    </td>
 
-            </tr>
+                    <td>
 
-            @endforeach
+                        {{ $item->hewan->nama_hewan }}
+
+                    </td>
+
+                    <td>
+
+                        {{ $item->status }}
+
+                    </td>
+
+                    <td>
+
+                        <a href="{{ url('/petugas/pemeriksaan/'.$item->id.'/create') }}"
+                           class="btn btn-success btn-sm">
+
+                            Periksa
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                @empty
+
+                <tr>
+
+                    <td colspan="6"
+                        class="text-center">
+
+                        Tidak ada antrian pemeriksaan
+
+                    </td>
+
+                </tr>
+
+                @endforelse
+
+            </tbody>
 
         </table>
 

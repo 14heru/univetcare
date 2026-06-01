@@ -233,6 +233,19 @@
 
         </a>
 
+        <li class="nav-item">
+
+                    <a href="{{ url('/petugas/hasil-pemeriksaan') }}"
+                    class="nav-link">
+
+                        <i class="bi bi-clipboard2-pulse"></i>
+
+                        Hasil Pemeriksaan
+
+                    </a>
+
+                </li>
+
         <a href="{{ url('/petugas/billing') }}">
 
             <i class="bi bi-receipt"></i>

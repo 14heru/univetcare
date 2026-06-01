@@ -21,7 +21,7 @@ class PemesananController extends Controller
         $pemesanan = Pemesanan::findOrFail($id);
 
         $pemesanan->update([
-            'status' => 'Dikonfirmasi'
+            'status' => 'Diproses'
         ]);
 
         return redirect('/admin/pemesanan')

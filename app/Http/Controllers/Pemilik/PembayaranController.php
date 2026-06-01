@@ -7,63 +7,216 @@ use Illuminate\Http\Request;
 
 use App\Models\Billing;
 use App\Models\Pembayaran;
+use App\Models\Pemesanan;
+
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PembayaranController extends Controller
 {
+    /**
+     * HALAMAN DATA PEMBAYARAN
+     */
     public function index()
     {
-        $billing = Billing::whereHas('pemeriksaan.pemesanan', function($query){
 
-            $query->where('user_id', auth()->id());
+        // AUTO CANCEL PEMBAYARAN
 
-        })->latest()->get();
+        $expired = Pembayaran::where(
 
-        return view('pemilik.pembayaran.index', compact('billing'));
+            'status',
+            'Menunggu Pembayaran'
+
+        )
+        ->where(
+            'expired_at',
+            '<',
+            now()
+        )
+        ->get();
+
+        foreach($expired as $item){
+
+            $item->update([
+
+                'status' => 'Dibatalkan'
+
+            ]);
+
+            // UPDATE BOOKING
+
+            if($item->pemesanan){
+
+                $item->pemesanan->update([
+
+                    'status' => 'Dibatalkan'
+
+                ]);
+
+            }
+
+        }
+
+        // AUTO CANCEL KONFIRMASI ADMIN
+
+        $expiredAdmin = Pembayaran::where(
+
+            'status',
+            'Menunggu Konfirmasi Admin'
+
+        )
+        ->where(
+            'expired_at',
+            '<',
+            now()
+        )
+        ->get();
+
+        foreach($expiredAdmin as $item){
+
+            $item->update([
+
+                'status' => 'Dibatalkan'
+
+            ]);
+
+            if($item->pemesanan){
+
+                $item->pemesanan->update([
+
+                    'status' => 'Dibatalkan'
+
+                ]);
+
+            }
+
+        }
+
+        $pembayaran = Pembayaran::latest()->get();
+
+        return view(
+            'pemilik.pembayaran.index',
+            compact('pembayaran')
+        );
     }
 
+    /**
+     * HALAMAN PEMBAYARAN
+     */
     public function create($id)
     {
-        $billing = Billing::findOrFail($id);
+        $pembayaran = Pembayaran::findOrFail($id);
 
-        return view('pemilik.pembayaran.create', compact('billing'));
+        // if(request()->is('admin/*')){
+
+        //         return view(
+        //         'admin.pembayaran.index',
+        //         compact('pembayaran')
+        //     );
+
+        //     }
+
+                    return view(
+                        'pemilik.pembayaran.create',
+                        compact('pembayaran')
+            );
     }
 
-    public function store(Request $request)
+    /**
+     * UPLOAD PEMBAYARAN
+     */
+    public function update(Request $request, $id)
     {
         $request->validate([
+
             'metode_pembayaran' => 'required',
-            'bukti_pembayaran' => 'required|image',
+
+            'bukti_pembayaran' => 'required|image'
+
         ]);
 
-        $billing = Billing::findOrFail($request->billing_id);
+        $pembayaran = Pembayaran::findOrFail($id);
 
         $file = $request->file('bukti_pembayaran');
 
         $namaFile = time().'_'.$file->getClientOriginalName();
 
-        $file->move(public_path('bukti_pembayaran'), $namaFile);
+        $file->move(
 
-        Pembayaran::create([
+            public_path('bukti_pembayaran'),
 
-            'billing_id' => $billing->id,
+            $namaFile
 
-            'kode_pembayaran' => 'PAY-'.time(),
+        );
 
-            'metode_pembayaran' => $request->metode_pembayaran,
+        $pembayaran->update([
 
-            'bukti_pembayaran' => $namaFile,
+            'metode_pembayaran' =>
+                $request->metode_pembayaran,
 
-            'jumlah_bayar' => $billing->total,
+            'bukti_pembayaran' =>
+                $namaFile,
 
-            'status' => 'Menunggu Verifikasi'
+            'status' =>
+                'Menunggu Konfirmasi Admin'
 
-        ]);
-
-        $billing->update([
-            'status' => 'Menunggu Verifikasi'
         ]);
 
         return redirect('/pemilik/pembayaran')
-                ->with('success', 'Pembayaran berhasil dikirim');
+                ->with(
+                    'success',
+                    'Bukti pembayaran berhasil diupload'
+                );
+    }
+
+    /**
+     * VERIFIKASI PEMBAYARAN
+     */
+    public function verifikasi($id)
+    {
+        $pembayaran = Pembayaran::findOrFail($id);
+
+        $pembayaran->update([
+
+            'status' => 'Dikonfirmasi'
+
+        ]);
+
+        // UPDATE STATUS BOOKING
+
+        $pemesanan = Pemesanan::findOrFail(
+            $pembayaran->pemesanan_id
+        );
+
+        $pemesanan->update([
+
+            'status' => 'Diproses'
+
+        ]);
+
+        return redirect('/admin/pembayaran')
+                ->with(
+                    'success',
+                    'Pembayaran berhasil dikonfirmasi'
+                );
+    }
+
+    /**
+     * CETAK PDF
+     */
+    public function cetakPdf()
+    {
+        $pembayaran = Pembayaran::latest()->get();
+
+        $pdf = Pdf::loadView(
+
+            'pemilik.pembayaran.pdf',
+
+            compact('pembayaran')
+
+        );
+
+        return $pdf->download(
+            'laporan-pembayaran.pdf'
+        );
     }
 }

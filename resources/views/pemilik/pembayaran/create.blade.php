@@ -2,72 +2,244 @@
 
 @section('content')
 
-<div class="card shadow-sm">
+<div class="d-flex
+            justify-content-between
+            align-items-center
+            mb-4">
 
-    <div class="card-body">
+    <h1 class="page-title mb-0">
 
-        <h3>Pembayaran Billing</h3>
+                @if($pembayaran->jenis_pembayaran == 'DP')
 
-        <hr>
+                    Pembayaran Administrasi
 
-        <form action="{{ url('/pemilik/pembayaran/store') }}"
-              method="POST"
-              enctype="multipart/form-data">
+                @else
 
-            @csrf
+                    Pembayaran Pelunasan
 
-            <input type="hidden"
-                   name="billing_id"
-                   value="{{ $billing->id }}">
+                @endif
 
-            <div class="mb-3">
+            </h1>
 
-                <label>Total Pembayaran</label>
+</div>
 
-                <input type="text"
-                       class="form-control"
-                       value="Rp {{ number_format($billing->total) }}"
-                       readonly>
+<div class="card-custom">
+
+    {{-- <div class="alert alert-warning mb-4">
+
+        <strong>
+
+            Uang Muka (DP)
+
+        </strong>
+
+        sebesar
+
+        <strong>
+
+            Rp 15.000
+
+        </strong>
+
+        wajib dibayarkan untuk melanjutkan booking pemeriksaan.
+
+    </div> --}}
+                    @if($pembayaran->jenis_pembayaran == 'DP')
+
+                <div class="alert alert-warning mb-4">
+
+                    <strong>
+
+                        Pembayaran Administrasi
+
+                    </strong>
+
+                    sebesar
+
+                    <strong>
+
+                        Rp {{ number_format($pembayaran->jumlah_bayar) }}
+
+                    </strong>
+
+                    wajib dibayarkan untuk melanjutkan booking pemeriksaan.
+
+                </div>
+
+                @else
+
+                <div class="alert alert-info mb-4">
+
+                    <strong>
+
+                        Pelunasan Tagihan
+
+                    </strong>
+
+                    sebesar
+
+                    <strong>
+
+                        Rp {{ number_format($pembayaran->jumlah_bayar) }}
+
+                    </strong>
+
+                    wajib dibayarkan untuk menyelesaikan pemeriksaan.
+
+                </div>
+
+                @endif
+
+    <form action="{{ url('/pemilik/pembayaran/'.$pembayaran->id) }}"
+          method="POST"
+          enctype="multipart/form-data">
+
+        @csrf
+        @method('PUT')
+
+        <!-- NOMINAL -->
+
+        <div class="mb-4">
+
+            <label class="form-label">
+
+                Nominal Pembayaran
+
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   value="Rp {{ number_format($pembayaran->jumlah_bayar) }}"
+                   readonly>
+
+        </div>
+
+        <!-- METODE -->
+
+        <div class="mb-4">
+
+            <label class="form-label">
+
+                Metode Pembayaran
+
+            </label>
+
+            <select name="metode_pembayaran"
+                    id="metode"
+                    class="form-select">
+
+                <option value="QR Code">
+
+                    QR Code
+
+                </option>
+
+                <option value="E-Wallet">
+
+                    E-Wallet
+
+                </option>
+
+                <option value="Transfer">
+
+                    Transfer
+
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- QR CODE -->
+
+        <div id="qrcode-area"
+             class="mb-4">
+
+            <label class="form-label">
+
+                QR Code Pembayaran
+
+            </label>
+
+            <div>
+
+                {!! QrCode::size(250)->generate(
+
+                    'Kode Pembayaran : '.$pembayaran->kode_pembayaran.
+
+                    ' | Nominal : Rp '.$pembayaran->jumlah_bayar
+
+                    ) !!}
 
             </div>
 
-            <div class="mb-3">
+        </div>
 
-                <label>Metode Pembayaran</label>
+        <!-- UPLOAD -->
 
-                <select name="metode_pembayaran"
-                        class="form-control">
+        <div class="mb-4">
 
-                    <option value="QRIS">QRIS</option>
-                    <option value="Transfer">Transfer</option>
-                    <option value="Cash">Cash</option>
-                    <option value="E-Wallet">E-Wallet</option>
+            <label class="form-label">
 
-                </select>
+                Upload Bukti Pembayaran
 
-            </div>
+            </label>
 
-            <div class="mb-3">
+            <input type="file"
+                   name="bukti_pembayaran"
+                   class="form-control">
 
-                <label>Upload Bukti Pembayaran</label>
+        </div>
 
-                <input type="file"
-                       name="bukti_pembayaran"
-                       class="form-control">
+        <!-- BUTTON -->
 
-            </div>
+        <div class="d-flex gap-2">
 
             <button type="submit"
-                    class="btn btn-primary">
+                    class="btn-custom">
 
-                Kirim Pembayaran
+                Upload Pembayaran
 
             </button>
 
-        </form>
+            <button type="reset"
+                    class="btn btn-secondary rounded-pill px-4">
 
-    </div>
+                Reset
+
+            </button>
+
+        </div>
+
+    </form>
 
 </div>
+
+<!-- SCRIPT QR -->
+
+<script>
+
+document.getElementById('metode')
+.addEventListener('change', function(){
+
+    let metode = this.value;
+
+    let qr = document.getElementById(
+        'qrcode-area'
+    );
+
+    if(metode == 'QR Code'){
+
+        qr.style.display = 'block';
+
+    }else{
+
+        qr.style.display = 'none';
+
+    }
+
+});
+
+</script>
 
 @endsection

@@ -6,9 +6,29 @@
 
     <div class="card-body">
 
-        <h3>Input Pemeriksaan</h3>
+        <h3 class="mb-4">
 
-        <hr>
+            Input Pemeriksaan
+
+        </h3>
+
+        @if ($errors->any())
+
+        <div class="alert alert-danger">
+
+            <ul class="mb-0">
+
+                @foreach ($errors->all() as $error)
+
+                    <li>{{ $error }}</li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+        @endif
 
         <form action="{{ url('/petugas/pemeriksaan/store') }}"
               method="POST">
@@ -19,36 +39,63 @@
                    name="pemesanan_id"
                    value="{{ $pemesanan->id }}">
 
+            <!-- HASIL -->
+
             <div class="mb-3">
 
-                <label>Hasil Pemeriksaan</label>
+                <label class="form-label">
+
+                    Hasil Pemeriksaan
+
+                </label>
 
                 <textarea name="hasil_pemeriksaan"
-                          class="form-control"></textarea>
+                          class="form-control"
+                          required></textarea>
 
             </div>
 
+            <!-- DIAGNOSA -->
+
             <div class="mb-3">
 
-                <label>Diagnosa Singkat</label>
+                <label class="form-label">
+
+                    Diagnosa Singkat
+
+                </label>
 
                 <textarea name="diagnosa_singkat"
-                          class="form-control"></textarea>
+                          class="form-control"
+                          required></textarea>
 
             </div>
 
+            <!-- TINDAKAN -->
+
             <div class="mb-3">
 
-                <label>Tindakan</label>
+                <label class="form-label">
+
+                    Tindakan
+
+                </label>
 
                 <textarea name="tindakan"
-                          class="form-control"></textarea>
+                          class="form-control"
+                          required>{{ old('diagnosa_singkat') }}</textarea>
 
             </div>
 
-            <div class="mb-3">
+            <!-- CATATAN -->
 
-                <label>Catatan</label>
+            <div class="mb-4">
+
+                <label class="form-label">
+
+                    Catatan
+
+                </label>
 
                 <textarea name="catatan"
                           class="form-control"></textarea>

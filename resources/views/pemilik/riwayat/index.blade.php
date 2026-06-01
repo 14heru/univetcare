@@ -12,60 +12,84 @@
 
     <table class="table align-middle">
 
-        <tr>
+        <thead>
 
-            <th>No</th>
-            <th>Kode Booking</th>
-            <th>Hewan</th>
-            <th>Diagnosa</th>
-            <th>Tindakan</th>
-            <th>Status</th>
+            <tr>
 
-        </tr>
+                <th>No</th>
+                <th>Kode Booking</th>
+                <th>Hewan</th>
+                <th>Diagnosa</th>
+                <th>Tindakan</th>
+                <th>Status</th>
 
-        @foreach($riwayat as $item)
+            </tr>
 
-        <tr>
+        </thead>
 
-            <td>{{ $loop->iteration }}</td>
+        <tbody>
 
-            <td>
+            @forelse($riwayat as $item)
 
-                {{ $item->pemesanan->kode_booking }}
+            <tr>
 
-            </td>
+                <td>
 
-            <td>
+                    {{ $loop->iteration }}
 
-                {{ $item->pemesanan->hewan->nama_hewan }}
+                </td>
 
-            </td>
+                <td>
 
-            <td>
+                    {{ $item->pemesanan->kode_booking ?? '-' }}
 
-                {{ $item->diagnosa_singkat }}
+                </td>
 
-            </td>
+                <td>
 
-            <td>
+                    {{ $item->pemesanan->hewan->nama_hewan ?? '-' }}
 
-                {{ $item->tindakan }}
+                </td>
 
-            </td>
+                <td>
 
-            <td>
+                    {{ $item->diagnosa_singkat ?? '-' }}
 
-                <span class="badge-status">
+                </td>
 
-                    Selesai
+                <td>
 
-                </span>
+                    {{ $item->tindakan ?? '-' }}
 
-            </td>
+                </td>
 
-        </tr>
+                <td>
 
-        @endforeach
+                    <span class="badge bg-success">
+
+                        Selesai
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            @empty
+
+            <tr>
+
+                <td colspan="6" class="text-center">
+
+                    Belum ada riwayat pemeriksaan
+
+                </td>
+
+            </tr>
+
+            @endforelse
+
+        </tbody>
 
     </table>
 
